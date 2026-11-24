@@ -264,9 +264,6 @@ export default function AdminLoginPage() {
                 <span>{loading ? "Memverifikasi..." : "Masuk ke Panel Admin"}</span>
                 {!loading && <span className="text-lg">→</span>}
               </button>
-              <p className="text-center text-[11px] text-zinc-400 mt-2.5">
-                Kredensial login: Username <span className="font-semibold text-zinc-600">admin</span> / Password <span className="font-semibold text-zinc-600">admin</span> (atau <span className="font-semibold text-zinc-600">admin123</span>)
-              </p>
             </div>
           </form>
         </div>
