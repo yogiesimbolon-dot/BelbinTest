@@ -36,6 +36,13 @@ CREATE POLICY "Allow authenticated delete on hasil_belbin"
     TO authenticated
     USING (true);
 
+-- Policy INSERT agar penulisan data tes peserta dapat berjalan
+CREATE POLICY "Allow insert on hasil_belbin"
+    ON hasil_belbin
+    FOR INSERT
+    TO anon, authenticated, service_role
+    WITH CHECK (true);
+
 -- Berikan izin akses tabel ke role postgres, anon, authenticated, dan service_role
 GRANT ALL ON TABLE public.hasil_belbin TO postgres, anon, authenticated, service_role;
 

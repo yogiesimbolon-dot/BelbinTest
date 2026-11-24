@@ -122,17 +122,20 @@ export async function submitTes(
     });
 
     if (insertError) {
+      console.error("submitTes insert error:", insertError);
       return {
         success: false,
-        error: "Gagal menyimpan jawaban ke database. Silakan coba lagi.",
+        error: `Gagal menyimpan jawaban ke database: ${insertError.message || "Izin ditolak atau masalah koneksi"}`,
       };
     }
 
     return { success: true, hasil: hasilPayload };
-  } catch {
+  } catch (err: unknown) {
+    console.error("submitTes exception:", err);
+    const msg = err instanceof Error ? err.message : String(err);
     return {
       success: false,
-      error: "Terjadi kesalahan internal pada server saat memproses jawaban.",
+      error: `Terjadi kesalahan saat memproses jawaban: ${msg}`,
     };
   }
 }
