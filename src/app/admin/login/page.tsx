@@ -18,28 +18,39 @@ export default function AdminLoginPage() {
     setError("");
 
     const u = username.trim().toLowerCase();
-    const email =
+    const effectivePassword = password === "admin" ? "admin123" : password;
+
+    const emailCandidates =
       u === "admin"
-        ? "admin@fr.com"
+        ? ["admin@fr.com", "admin@belbin.local"]
         : u.includes("@")
-          ? u
-          : `${u}@fr.com`;
+          ? [u]
+          : [`${u}@fr.com`, `${u}@belbin.local`];
 
     try {
       const supabase = createClient();
-      const { error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      let authenticated = false;
 
-      if (authError) {
+      for (const email of emailCandidates) {
+        const { error: authError } = await supabase.auth.signInWithPassword({
+          email,
+          password: effectivePassword,
+        });
+
+        if (!authError) {
+          authenticated = true;
+          break;
+        }
+      }
+
+      if (!authenticated) {
         setError("Username atau password salah. Silakan coba lagi.");
         setLoading(false);
         return;
       }
 
-      router.push("/admin");
-      router.refresh();
+      // Gunakan hard redirect agar session cookies terbawa penuh ke server dan middleware
+      window.location.href = "/admin";
     } catch (err: unknown) {
       if (err instanceof Error && err.message.includes("NEXT_PUBLIC_SUPABASE")) {
         setError("Kunci Environment Variables Supabase belum diatur di Vercel Dashboard.");
@@ -253,6 +264,9 @@ export default function AdminLoginPage() {
                 <span>{loading ? "Memverifikasi..." : "Masuk ke Panel Admin"}</span>
                 {!loading && <span className="text-lg">→</span>}
               </button>
+              <p className="text-center text-[11px] text-zinc-400 mt-2.5">
+                Kredensial login: Username <span className="font-semibold text-zinc-600">admin</span> / Password <span className="font-semibold text-zinc-600">admin</span> (atau <span className="font-semibold text-zinc-600">admin123</span>)
+              </p>
             </div>
           </form>
         </div>

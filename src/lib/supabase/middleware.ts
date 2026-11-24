@@ -49,7 +49,11 @@ export async function updateSession(request: NextRequest) {
 
     if (pathname === "/admin/login") {
       if (user) {
-        return NextResponse.redirect(new URL("/admin", request.url));
+        const redirectRes = NextResponse.redirect(new URL("/admin", request.url));
+        supabaseResponse.cookies.getAll().forEach((c) => {
+          redirectRes.cookies.set(c.name, c.value);
+        });
+        return redirectRes;
       }
       return supabaseResponse;
     }

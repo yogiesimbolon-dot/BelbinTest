@@ -36,4 +36,7 @@ CREATE POLICY "Allow authenticated delete on hasil_belbin"
     TO authenticated
     USING (true);
 
+-- Berikan izin akses tabel ke role postgres, anon, authenticated, dan service_role
+GRANT ALL ON TABLE public.hasil_belbin TO postgres, anon, authenticated, service_role;
+
 -- Tanpa policy INSERT untuk anon. Penulisan data peserta dilakukan oleh server action memakai service role key.
