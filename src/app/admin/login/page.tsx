@@ -52,8 +52,8 @@ export default function AdminLoginPage() {
       // Gunakan hard redirect agar session cookies terbawa penuh ke server dan middleware
       window.location.href = "/admin";
     } catch (err: unknown) {
-      if (err instanceof Error && err.message.includes("NEXT_PUBLIC_SUPABASE")) {
-        setError("Kunci Environment Variables Supabase belum diatur di Vercel Dashboard.");
+      if (err instanceof Error) {
+        setError(`Gagal terhubung ke server autentikasi: ${err.message}`);
       } else {
         setError("Gagal terhubung ke server autentikasi. Pastikan variabel Supabase sudah disetel di Vercel.");
       }

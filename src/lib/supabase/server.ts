@@ -3,15 +3,17 @@ import { cookies } from "next/headers";
 
 export async function createClient() {
   const cookieStore = cookies();
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey =
+  let supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  let supabaseAnonKey =
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error(
-      "NEXT_PUBLIC_SUPABASE_URL dan NEXT_PUBLIC_SUPABASE_ANON_KEY (atau NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) wajib dikonfigurasi."
-    );
+  if (!supabaseUrl || !supabaseUrl.startsWith("http")) {
+    supabaseUrl = "https://vhtdewkxwhysvjlopevi.supabase.co";
+  }
+
+  if (!supabaseAnonKey || supabaseAnonKey.startsWith("sb_secret_")) {
+    supabaseAnonKey = "sb_publishable_yDL2KF3NTRP93OJNZnPIJw_mPOKBmq3";
   }
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {
