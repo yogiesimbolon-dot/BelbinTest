@@ -9,16 +9,45 @@ const DEFAULT_SUPABASE_ANON_KEY = "sb_publishable_yDL2KF3NTRP93OJNZnPIJw_mPOKBmq
  * Jika service role key belum disetel di Vercel, otomatis fallback ke anon key agar tidak melempar uncaught exception.
  */
 export function createAdminClient() {
-  let supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  let serviceRoleKey =
+  let supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  let serviceRoleKey = (
     process.env.SUPABASE_SERVICE_ROLE_KEY ||
     process.env.SUPABASE_SECRET_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    DEFAULT_SUPABASE_ANON_KEY;
+    ""
+  ).trim();
 
+  // Jika serviceRoleKey terisi URL (tertukar dengan field URL di Vercel)
+  if (serviceRoleKey.startsWith("http")) {
+    if (!supabaseUrl || !supabaseUrl.startsWith("http")) {
+      supabaseUrl = serviceRoleKey;
+    }
+    serviceRoleKey = "";
+  }
+
+  // Jika supabaseUrl tidak valid
   if (!supabaseUrl || !supabaseUrl.startsWith("http")) {
     supabaseUrl = DEFAULT_SUPABASE_URL;
+  }
+
+  // Validasi format key: harus diawali sb_ atau eyJ (JWT)
+  const isValidKey =
+    serviceRoleKey &&
+    (serviceRoleKey.startsWith("sb_") || serviceRoleKey.startsWith("eyJ"));
+
+  if (!isValidKey) {
+    const anon = (
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+      ""
+    ).trim();
+
+    if (anon && (anon.startsWith("sb_") || anon.startsWith("eyJ"))) {
+      serviceRoleKey = anon;
+    } else {
+      serviceRoleKey = DEFAULT_SUPABASE_ANON_KEY;
+    }
   }
 
   return createClient(supabaseUrl, serviceRoleKey, {
