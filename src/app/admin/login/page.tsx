@@ -20,10 +20,10 @@ export default function AdminLoginPage() {
     const u = username.trim().toLowerCase();
     const email =
       u === "admin"
-        ? "admin@belbin.local"
+        ? "admin@fr.com"
         : u.includes("@")
-        ? u
-        : `${u}@belbin.local`;
+          ? u
+          : `${u}@fr.com`;
 
     try {
       const supabase = createClient();
