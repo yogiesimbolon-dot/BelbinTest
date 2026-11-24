@@ -34,15 +34,28 @@ export default async function AdminPage() {
             <span className="font-semibold text-rose-700">{error.message}</span>.
           </p>
           {isPermissionError && (
-            <div className="space-y-2 pt-1">
+            <div className="space-y-3 pt-1">
               <p className="font-bold text-xs text-amber-900 uppercase tracking-wider">
-                Langkah Mengaktifkan Hak Akses Tabel (Buka Supabase Dashboard &gt; SQL Editor):
+                Langkah Mengaktifkan Hak Akses Tabel:
               </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <a
+                  href="https://supabase.com/dashboard/project/vhtdewkxwhysvjlopevi/sql/new"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-[#13583B] hover:bg-[#0f442e] text-white font-semibold text-xs shadow-xs transition"
+                >
+                  <span>1. Buka SQL Editor Supabase</span>
+                  <span>↗</span>
+                </a>
+                <span className="text-xs text-zinc-500">2. Salin dan jalankan perintah di bawah ini, lalu refresh halaman ini:</span>
+              </div>
               <pre className="p-3.5 bg-zinc-900 text-emerald-400 rounded-xl font-mono text-xs overflow-x-auto select-all">
                 GRANT ALL ON TABLE public.hasil_belbin TO postgres, anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO postgres, anon, authenticated, service_role;
               </pre>
               <p className="text-xs text-zinc-500">
-                Setelah perintah SQL di atas dijalankan di Supabase SQL Editor, segarkan (refresh) halaman ini untuk melihat seluruh data peserta.
+                Setelah perintah SQL di atas dijalankan di Supabase SQL Editor (klik tombol <strong>Run</strong>), segarkan (refresh) halaman ini untuk melihat tabel data peserta.
               </p>
             </div>
           )}
